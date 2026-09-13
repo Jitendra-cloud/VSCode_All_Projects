@@ -26,3 +26,5 @@ Now I have selected "WEST" down to up as highlighted in red circle
 
 You can see third word also completed as shown in red circle and structure is also changed
 
+![Game instruction image 6](images/image_6.png)
+
