@@ -583,3 +583,133 @@ Status: Active
 10. A hosts-file entry does not fix routing or firewall problems.
 11. Do not guess VPN details or server IPs.
 12. Verify the actual endpoint and port before changing configuration.
+
+
+## Why SICF: `sap → bc → ui2 → flp`?
+
+This was **not a random path selection**. The path came directly from the Fiori Launchpad URL we were troubleshooting.
+
+Example URL:
+
+```text
+https://s4h2023.sapdemo.com:44303/sap/bc/ui2/flp?sap-client=100
+```
+
+The important part is:
+
+```text
+/sap/bc/ui2/flp
+```
+
+SAP's **SICF (Internet Communication Framework)** organizes HTTP services in a tree that follows this path structure. Therefore, the URL path can be mapped directly to the SICF tree:
+
+```text
+Fiori URL path                 SICF tree
+────────────────────────────────────────────
+/sap                           → sap
+   /bc                         → bc
+      /ui2                     → ui2
+         /flp                  → flp
+```
+
+So we navigated in SICF:
+
+```text
+default_host
+   └── sap
+       └── bc
+           └── ui2
+               └── flp
+```
+
+### How to identify the SICF service yourself
+
+When troubleshooting an SAP HTTP/Fiori URL:
+
+1. **Look at the URL.**
+2. Ignore the protocol, hostname, and port for this particular check.
+3. Take the URL path beginning with `/sap/...`.
+4. Compare that path with the SICF service tree.
+5. Open the matching service and check whether it is active.
+
+For example:
+
+| URL path | What to investigate |
+|---|---|
+| `/sap/bc/ui2/flp` | Fiori Launchpad SICF service |
+| `/sap/opu/odata/...` | OData HTTP services |
+| `/sap/public/...` | Public SAP web services/resources |
+
+### Why not just check `sap`?
+
+Because `sap` is only a **higher-level folder** containing many different HTTP services.
+
+We need to check the **specific endpoint** requested by the browser. In our case, the browser was requesting:
+
+```text
+/sap/bc/ui2/flp
+```
+
+Therefore, the relevant SICF service was:
+
+```text
+/sap/bc/ui2/flp
+```
+
+### Important: "Service Active" does not mean Fiori is fully working
+
+When SICF showed:
+
+```text
+Service (Active)
+```
+
+we proved only that the corresponding SAP HTTP service was activated.
+
+It did **not** prove that the complete Fiori connection was working.
+
+A useful troubleshooting model is:
+
+```text
+Browser
+   ↓
+DNS / hostname resolution
+   ↓
+Network connectivity
+   ↓
+TCP port 44303
+   ↓
+HTTPS / SAP ICM
+   ↓
+SICF service: /sap/bc/ui2/flp
+   ↓
+Fiori Launchpad application/configuration
+   ↓
+Authentication / authorization
+```
+
+This distinction helped us separate the problems:
+
+- `s1.login2server.com` / port `3262` → SAP GUI / Eclipse ABAP connection
+- `s4h2023.sapdemo.com` / port `44303` → Fiori HTTPS connection
+- `/sap/bc/ui2/flp` → the specific Fiori Launchpad HTTP service inside SAP
+
+### General troubleshooting principle
+
+**Don't guess the SAP transaction or service to check. Start from the symptom and trace it backward.**
+
+For a browser URL, the URL gives you valuable clues:
+
+```text
+Hostname        → DNS / hosts file
+Port            → network / firewall / ICM service
+URL path        → SICF service
+SAP client      → SAP logon client
+Application     → Fiori/ICF/application configuration
+```
+
+This is why the SICF check specifically went to:
+
+```text
+default_host → sap → bc → ui2 → flp
+```
