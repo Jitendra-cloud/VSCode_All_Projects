@@ -1,0 +1,585 @@
+# SAP A4H Fiori + Eclipse Connectivity Troubleshooting
+
+## 1. Original problems
+
+Two issues were investigated:
+
+1. `/N/UI2/FLP` / Fiori Launchpad showed **Server not found**.
+2. Eclipse/ADT could not create an ABAP Project and showed:
+   `Logon to system S4H failed: hostname 's1.login2server.com' unknown`.
+
+The purpose was to determine whether the problem was SAP configuration, Fiori/SICF, ICM, DNS, network, VPN, or Eclipse.
+
+---
+
+## 2. The three connection paths
+
+### SAP GUI
+
+```text
+SAP GUI
+  -> s1.login2server.com
+  -> Instance 62
+  -> Dispatcher port 3262
+```
+
+### Eclipse / ADT
+
+```text
+Eclipse/ADT
+  -> s1.login2server.com
+  -> Instance 62
+  -> Dispatcher port 3262
+```
+
+### Fiori
+
+```text
+Browser
+  -> s4h2023.sapdemo.com
+  -> HTTPS 44303
+  -> /sap/bc/ui2/flp
+```
+
+The important point is that SAP GUI, Eclipse and Fiori can use different hostnames and ports.
+
+---
+
+## 3. SICF check
+
+Transaction:
+
+```text
+SICF
+```
+
+Service checked:
+
+```text
+/default_host/sap/bc/ui2/flp
+```
+
+Result:
+
+```text
+Service (Active)
+```
+
+### Why
+
+SICF controls HTTP services in SAP. This check verifies that the Fiori Launchpad service is activated.
+
+### Conclusion
+
+`/sap/bc/ui2/flp` was already active. No activation change was needed.
+
+---
+
+## 4. SMICM check
+
+Transaction:
+
+```text
+SMICM
+-> Goto -> Services
+```
+
+The services included:
+
+```text
+HTTP   8003   Active
+HTTPS  44303  Active
+HTTPS  5203   Active
+```
+
+### Why
+
+SMICM manages HTTP/HTTPS communication. Fiori needs the HTTPS listener.
+
+### Conclusion
+
+HTTPS port `44303` was active.
+
+---
+
+## 5. SM51 check
+
+Transaction:
+
+```text
+SM51
+```
+
+The SAP instance was:
+
+```text
+s4h2023_A4H_03
+Host: s4h2023
+State: Active
+```
+
+### Why
+
+SM51 verifies that the SAP application server instance is running.
+
+### Conclusion
+
+The SAP application server was active.
+
+---
+
+## 6. Internal SAP server IP
+
+SAP server information showed:
+
+```text
+s4h2023 -> 192.168.1.161
+```
+
+The PC was on:
+
+```text
+10.32.129.93
+```
+
+### Why
+
+This was used to test whether the PC could reach the internal SAP server directly.
+
+---
+
+## 7. Windows network information
+
+`ipconfig` showed:
+
+```text
+IPv4:       10.32.129.93
+Subnet:     255.255.255.0
+Gateway:    10.32.129.59
+DNS server: 10.32.129.59
+```
+
+This is different from the internal SAP IP `192.168.1.161`.
+
+---
+
+## 8. DNS test for Fiori hostname
+
+Command:
+
+```cmd
+nslookup s4h2023.sapdemo.com
+```
+
+Initial result:
+
+```text
+Non-existent domain
+```
+
+### Why
+
+`nslookup` checks DNS. The configured DNS server did not have a record for `s4h2023.sapdemo.com`.
+
+This explained the original browser hostname-resolution problem.
+
+---
+
+## 9. Test of internal IP
+
+Command:
+
+```cmd
+ping 192.168.1.161
+```
+
+Result:
+
+```text
+Request timed out
+100% loss
+```
+
+`tracert 192.168.1.161` also did not reach the destination.
+
+### Important
+
+Ping uses ICMP. A ping failure does not necessarily mean an application port is unavailable.
+
+For application connectivity, TCP port testing is more useful.
+
+---
+
+## 10. SAP GUI connection details
+
+SAP GUI Properties showed:
+
+```text
+System ID:          S4H
+Application Server: s1.login2server.com
+Instance Number:    62
+```
+
+### Important correction
+
+The `03` in `s4h2023_A4H_03` is part of the SAP instance name shown in SM51. The SAP GUI connection's actual instance number is `62`.
+
+For standard SAP Dispatcher communication:
+
+```text
+32 + 62 = 3262
+```
+
+So the SAP Dispatcher port is:
+
+```text
+3262
+```
+
+---
+
+## 11. DNS test for SAP GUI hostname
+
+Command:
+
+```cmd
+nslookup s1.login2server.com
+```
+
+Result:
+
+```text
+Name:    s1.login2server.com
+Address: 124.123.22.43
+```
+
+Therefore:
+
+```text
+s1.login2server.com -> 124.123.22.43
+```
+
+---
+
+## 12. SAP Dispatcher connectivity
+
+Command:
+
+```powershell
+Test-NetConnection s1.login2server.com -Port 3262
+```
+
+Result:
+
+```text
+RemoteAddress      : 124.123.22.43
+RemotePort         : 3262
+TcpTestSucceeded   : True
+```
+
+### Conclusion
+
+The PC can reach the SAP application server through:
+
+```text
+s1.login2server.com:3262
+```
+
+This explains why SAP GUI can connect.
+
+---
+
+## 13. Eclipse / ADT issue
+
+Eclipse initially reported:
+
+```text
+Logon to system S4H failed:
+hostname 's1.login2server.com' unknown
+```
+
+The Eclipse connection was configured with:
+
+```text
+System ID:          S4H
+Connection Type:    Custom Application Server
+Application Server: s1.login2server.com
+Instance Number:    62
+```
+
+Changing the Application Server temporarily to:
+
+```text
+124.123.22.43
+```
+
+made the Eclipse connection work.
+
+### Conclusion
+
+The network and SAP Dispatcher were reachable. Using the IP bypassed the hostname-resolution problem affecting Eclipse/Java.
+
+Working diagnostic configuration:
+
+```text
+System ID:          S4H
+Application Server: 124.123.22.43
+Instance Number:    62
+Client:             100
+Language:           EN
+```
+
+---
+
+## 14. Windows hosts file
+
+The hosts file is:
+
+```text
+C:\Windows\System32\drivers\etc\hosts
+```
+
+It already contained several internal hostname mappings.
+
+There was no entry for:
+
+```text
+s4h2023.sapdemo.com
+```
+
+### Purpose
+
+A hosts-file entry can provide local hostname-to-IP resolution when DNS does not provide the required record.
+
+The relevant mapping used for the Fiori hostname was:
+
+```text
+124.123.22.43    s4h2023.sapdemo.com    s4h2023
+```
+
+Do not randomly add IP addresses. The IP should be verified first.
+
+---
+
+## 15. Fiori HTTPS connectivity test
+
+First, the hostname itself was not available through DNS:
+
+```cmd
+nslookup s4h2023.sapdemo.com
+```
+
+Then the IP/port was tested:
+
+```powershell
+Test-NetConnection 124.123.22.43 -Port 44303
+```
+
+Result:
+
+```text
+RemoteAddress      : 124.123.22.43
+RemotePort         : 44303
+TcpTestSucceeded   : True
+```
+
+This proved that the PC can reach HTTPS port `44303` on `124.123.22.43`.
+
+---
+
+## 16. Verify the hosts-file mapping
+
+After the hosts mapping, normal Windows hostname resolution showed:
+
+```cmd
+ping s4h2023.sapdemo.com
+```
+
+as:
+
+```text
+Pinging s4h2023.sapdemo.com [124.123.22.43]
+```
+
+The ping itself timed out. That is not a problem by itself because ICMP can be blocked.
+
+The important test was:
+
+```powershell
+Test-NetConnection s4h2023.sapdemo.com -Port 44303
+```
+
+Result:
+
+```text
+RemoteAddress      : 124.123.22.43
+RemotePort         : 44303
+TcpTestSucceeded   : True
+```
+
+### Important point about `nslookup`
+
+Even after a hosts-file entry exists, `nslookup` can still say:
+
+```text
+Non-existent domain
+```
+
+because `nslookup` queries the DNS server directly.
+
+Normal Windows applications can still resolve the hostname through the hosts file.
+
+---
+
+## 17. VPN conclusion
+
+A VPN was considered because the SAP internal IP was:
+
+```text
+192.168.1.161
+```
+
+while the PC was:
+
+```text
+10.32.129.93
+```
+
+However, the working public/application-server tests showed:
+
+```text
+s1.login2server.com:3262 -> True
+124.123.22.43:44303       -> True
+```
+
+Therefore, there was no evidence that a VPN was required for these tested endpoints.
+
+If the provider specifically requires a VPN, use only the VPN configuration supplied by the provider. Do not guess a VPN server address or Cloud ID.
+
+---
+
+## 18. Final connection picture
+
+```text
+                    SAP S4H / A4H
+                         |
+             +-----------+-----------+
+             |                       |
+          SAP GUI                 Fiori
+             |                       |
+ s1.login2server.com       s4h2023.sapdemo.com
+             |                       |
+       124.123.22.43           124.123.22.43
+             |                       |
+         Port 3262               Port 44303
+             |                       |
+             +-----------+-----------+
+                         |
+                    SAP system
+```
+
+### Eclipse / ADT
+
+```text
+Eclipse
+  -> 124.123.22.43
+  -> Port 3262
+  -> S4H
+  -> Working
+```
+
+### Fiori
+
+```text
+Browser
+  -> s4h2023.sapdemo.com
+  -> 124.123.22.43
+  -> Port 44303
+  -> SAP ICM
+  -> /sap/bc/ui2/flp
+```
+
+The TCP connectivity to the Fiori endpoint was verified successfully.
+
+---
+
+## 19. Transactions used
+
+| Transaction | Purpose |
+|---|---|
+| `SICF` | Check Fiori HTTP service |
+| `SMICM` | Check HTTP/HTTPS listeners |
+| `SM51` | Check SAP application server |
+| SAP GUI Properties | Find application server and instance number |
+| `/N/UI2/FLP` | Launch Fiori Launchpad |
+| `SE78` | SAP graphics/logo management; unrelated to this connectivity issue |
+
+---
+
+## 20. Windows commands used
+
+| Command | Purpose |
+|---|---|
+| `ipconfig` | Show PC IP, gateway and DNS |
+| `ping` | ICMP reachability test |
+| `tracert` | Trace network path |
+| `nslookup` | Test DNS resolution |
+| `Test-NetConnection` | Test TCP connectivity to a host/port |
+| `ipconfig /flushdns` | Clear Windows DNS cache |
+
+For SAP application troubleshooting, `Test-NetConnection` is generally more useful than ping because SAP services use TCP ports.
+
+---
+
+## 21. Current status
+
+### SAP GUI
+
+```text
+Server:   s1.login2server.com
+IP:       124.123.22.43
+Instance: 62
+Port:     3262
+Status:   Working
+```
+
+### Eclipse / ADT
+
+```text
+Server:   124.123.22.43
+Instance: 62
+Status:   Working
+```
+
+### Fiori network connectivity
+
+```text
+Host:     s4h2023.sapdemo.com
+IP:       124.123.22.43
+Port:     44303
+Status:   TCP reachable
+```
+
+### Fiori service
+
+```text
+/sap/bc/ui2/flp
+Status: Active
+```
+
+---
+
+## 22. Main lessons
+
+1. SAP GUI working does not mean Fiori and Eclipse use the same hostname/port.
+2. `SICF` confirms whether an HTTP service is active.
+3. `SMICM` confirms whether SAP is listening on HTTP/HTTPS ports.
+4. `SM51` confirms the SAP instance is running.
+5. DNS resolution and TCP connectivity are different problems.
+6. Ping can fail even when an application port works.
+7. `Test-NetConnection` is useful for testing a specific SAP port.
+8. Instance `62` corresponds to standard Dispatcher port `3262`.
+9. A hosts-file entry can fix local hostname resolution.
+10. A hosts-file entry does not fix routing or firewall problems.
+11. Do not guess VPN details or server IPs.
+12. Verify the actual endpoint and port before changing configuration.
