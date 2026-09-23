@@ -3,7 +3,7 @@
 ## 1. Formation Sheet (FS) Summary
 
 | Formation Sheet | Sentence Type |
-|---|---|---:|
+|---|---:|
 | FS1 | Future - Continuity - Action - Negative |
 | FS1 | Future - Simple - Action - Negative |
 | FS1 | Past - Completed - Action - Negative |
