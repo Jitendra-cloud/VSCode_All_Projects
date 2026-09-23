@@ -2,62 +2,62 @@
 
 ## 1. Formation Sheet (FS) Summary
 
-| Formation Sheet | Sentence Type | No. of Examples |
+| Formation Sheet | Sentence Type |
 |---|---|---:|
-| FS1 | Future - Continuity - Action - Negative | 1 |
-| FS1 | Future - Simple - Action - Negative | 3 |
-| FS1 | Past - Completed - Action - Negative | 1 |
-| FS1 | Past - Continuity - Action - Negative | 2 |
-| FS1 | Past - Continuity+Since/For - Action - Negative | 0 |
-| FS1 | Past - Simple - Action - Negative | 4 |
-| FS1 | Present - Completed - Action - Negative | 2 |
-| FS1 | Present - Continuity - Action - Negative | 2 |
-| FS1 | Present - Continuity+Since/For - Action - Negative | 0 |
-| FS1 | Present - Simple - Action - Negative | 3 |
-| FS1 | Future - Continuity - Action - Positive | 7 |
-| FS1 | Future - Simple - Action - Positive | 6 |
-| FS1 | Past - Completed - Action - Positive | 4 |
-| FS1 | Past - Continuity - Action - Positive | 7 |
-| FS1 | Past - Continuity+Since/For - Action - Positive | 1 |
-| FS1 | Past - Simple - Action - Positive | 10 |
-| FS1 | Present - Completed - Action - Positive | 2 |
-| FS1 | Present - Continuity - Action - Positive | 9 |
-| FS1 | Present - Continuity+Since/For - Action - Positive | 2 |
-| FS1 | Present - Simple - Action - Positive | 5 |
-| FS2 | Future - Simple - Status - Negative | 5 |
-| FS2 | Past - Completed - Status - Negative | 0 |
-| FS2 | Past - Continuity - Status - Negative | 3 |
-| FS2 | Past - Continuity+Since/For - Status - Negative | 0 |
-| FS2 | Past - Simple - Status - Negative | 6 |
-| FS2 | Present - Completed - Status - Negative | 0 |
-| FS2 | Present - Continuity - Status - Negative | 1 |
-| FS2 | Present - Continuity+Since/For - Status - Negative | 0 |
-| FS2 | Present - Simple - Status - Negative | 4 |
-| FS2 | Future - Simple - Status - Positive | 8 |
-| FS2 | Past - Completed - Status - Positive | 2 |
-| FS2 | Past - Continuity - Status - Positive | 6 |
-| FS2 | Past - Continuity+Since/For - Status - Positive | 3 |
-| FS2 | Past - Simple - Status - Positive | 7 |
-| FS2 | Present - Completed - Status - Positive | 2 |
-| FS2 | Present - Continuity - Status - Positive | 5 |
-| FS2 | Present - Continuity+Since/For - Status - Positive | 3 |
-| FS2 | Present - Simple - Status - Positive | 6 |
-| FS2 | Future - Continuity - SubjectIsNotDoer - Positive | 1 |
-| FS2 | Future - Continuity - SubjectIsNotDoer - Positive | 1 |
-| FS2 | Future - Simple - SubjectIsNotDoer - Positive | 4 |
-| FS2 | Future - Simple - SubjectIsNotDoer - Positive | 4 |
-| FS2 | Past - Completed - SubjectIsNotDoer - Positive | 3 |
-| FS2 | Past - Completed - SubjectIsNotDoer - Positive | 3 |
-| FS2 | Past - Continuity - SubjectIsNotDoer - Positive | 4 |
-| FS2 | Past - Continuity - SubjectIsNotDoer - Positive | 4 |
-| FS2 | Past - Simple - SubjectIsNotDoer - Positive | 3 |
-| FS2 | Past - Simple - SubjectIsNotDoer - Positive | 3 |
-| FS2 | Present - Completed - SubjectIsNotDoer - Positive | 2 |
-| FS2 | Present - Completed - SubjectIsNotDoer - Positive | 2 |
-| FS2 | Present - Continuity - SubjectIsNotDoer - Positive | 7 |
-| FS2 | Present - Continuity - SubjectIsNotDoer - Positive | 7 |
-| FS2 | Present - Simple - SubjectIsNotDoer - Positive | 3 |
-| FS2 | Present - Simple - SubjectIsNotDoer - Positive | 3 |
+| FS1 | Future - Continuity - Action - Negative
+| FS1 | Future - Simple - Action - Negative
+| FS1 | Past - Completed - Action - Negative
+| FS1 | Past - Continuity - Action - Negative
+| FS1 | Past - Continuity + Since/For - Action - Negative
+| FS1 | Past - Simple - Action - Negative
+| FS1 | Present - Completed - Action - Negative
+| FS1 | Present - Continuity - Action - Negative
+| FS1 | Present - Continuity + Since/For - Action - Negative
+| FS1 | Present - Simple - Action - Negative
+| FS1 | Future - Continuity - Action - Positive
+| FS1 | Future - Simple - Action - Positive
+| FS1 | Past - Completed - Action - Positive
+| FS1 | Past - Continuity - Action - Positive
+| FS1 | Past - Continuity + Since/For - Action - Positive
+| FS1 | Past - Simple - Action - Positive
+| FS1 | Present - Completed - Action - Positive
+| FS1 | Present - Continuity - Action - Positive
+| FS1 | Present - Continuity + Since/For - Action - Positive
+| FS1 | Present - Simple - Action - Positive
+| FS1 | Future - Simple - Status - Negative
+| FS1 | Past - Completed - Status - Negative
+| FS1 | Past - Continuity - Status - Negative
+| FS1 | Past - Continuity + Since/For - Status - Negative
+| FS1 | Past - Simple - Status - Negative
+| FS1 | Present - Completed - Status - Negative
+| FS1 | Present - Continuity - Status - Negative
+| FS1 | Present - Continuity + Since/For - Status - Negative
+| FS1 | Present - Simple - Status - Negative
+| FS1 | Future - Simple - Status - Positive
+| FS1 | Past - Completed - Status - Positive
+| FS1 | Past - Continuity - Status - Positive
+| FS1 | Past - Continuity + Since/For - Status - Positive
+| FS1 | Past - Simple - Status - Positive
+| FS1 | Present - Completed - Status - Positive
+| FS1 | Present - Continuity - Status - Positive
+| FS1 | Present - Continuity + Since/For - Status - Positive
+| FS1 | Present - Simple - Status - Positive
+| FS1 | Future - Continuity - Subject Is Not Doer - Positive
+| FS1 | Future - Continuity - Subject Is Not Doer - Negative
+| FS1 | Future - Simple - Subject Is Not Doer - Positive
+| FS1 | Future - Simple - Subject Is Not Doer - Negative
+| FS1 | Past - Completed - Subject Is Not Doer - Positive
+| FS1 | Past - Completed - Subject Is Not Doer - Negative
+| FS1 | Past - Continuity - Subject Is Not Doer - Positive
+| FS1 | Past - Continuity - Subject Is Not Doer - Negative
+| FS1 | Past - Simple - Subject Is Not Doer - Positive
+| FS1 | Past - Simple - Subject Is Not Doer - Negative
+| FS1 | Present - Completed - Subject Is Not Doer - Positive
+| FS1 | Present - Completed - Subject Is Not Doer - Negative
+| FS1 | Present - Continuity - Subject Is Not Doer - Positive
+| FS1 | Present - Continuity - Subject Is Not Doer - Negative
+| FS1 | Present - Simple - Subject Is Not Doer - Positive
+| FS1 | Present - Simple - Subject Is Not Doer - Negative
 
 ---
 
