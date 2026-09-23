@@ -24,7 +24,6 @@
 | FS1 | Present - Continuity - Action - Positive |
 | FS1 | Present - Continuity + Since/For - Action - Positive |
 | FS1 | Present - Simple - Action - Positive |
-
 | FS1 | Future - Simple - Status - Negative |
 | FS1 | Past - Completed - Status - Negative |
 | FS1 | Past - Continuity - Status - Negative |
@@ -43,7 +42,6 @@
 | FS1 | Present - Continuity - Status - Positive |
 | FS1 | Present - Continuity + Since/For - Status - Positive |
 | FS1 | Present - Simple - Status - Positive |
-
 | FS1 | Future - Continuity - Subject Is Not Doer - Positive |
 | FS1 | Future - Continuity - Subject Is Not Doer - Negative |
 | FS1 | Future - Simple - Subject Is Not Doer - Positive |
