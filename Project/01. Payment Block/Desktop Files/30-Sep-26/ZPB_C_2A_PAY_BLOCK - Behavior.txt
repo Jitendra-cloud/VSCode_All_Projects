@@ -1,0 +1,7 @@
+projection;
+strict ( 2 );
+
+define behavior for ZPB_C_2A_PAY_BLOCK
+{
+  use action block;
+}

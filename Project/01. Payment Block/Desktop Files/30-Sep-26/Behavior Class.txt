@@ -1,0 +1,42 @@
+CLASS lhc_PayBlock DEFINITION INHERITING FROM cl_abap_behavior_handler.
+
+  PRIVATE SECTION.
+
+    METHODS get_instance_authorizations FOR INSTANCE AUTHORIZATION
+
+      IMPORTING keys REQUEST requested_authorizations FOR PayBlock RESULT result.
+
+    METHODS block FOR MODIFY
+
+      IMPORTING keys FOR ACTION PayBlock~block RESULT result.
+
+ENDCLASS.
+
+CLASS lhc_PayBlock IMPLEMENTATION.
+
+  METHOD get_instance_authorizations.
+
+  ENDMETHOD.
+
+  METHOD block.
+
+	READ ENTITIES OF ZPB_I_2A_PAY_BLOCK IN LOCAL MODE
+  ENTITY ZPB_I_2A_PAY_BLOCK
+  ALL FIELDS WITH CORRESPONDING #( keys )
+  RESULT DATA(lt_pay_block).
+
+LOOP AT lt_pay_block INTO DATA(ls_pay_block).
+
+  " Temporary breakpoint
+  DATA(lv_custom1) = ls_pay_block-Custom1.
+  DATA(lv_custom4) = ls_pay_block-Custom4.
+  DATA(lv_custom9) = ls_pay_block-Custom9.
+
+ENDLOOP.
+
+
+
+  ENDMETHOD.
+
+ENDCLASS.
+do not reply

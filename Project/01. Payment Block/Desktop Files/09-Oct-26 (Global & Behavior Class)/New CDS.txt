@@ -1,0 +1,25 @@
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'Aggregated FI Tax Total'
+define view entity ZPB_R_MT_TAX_TOTAL
+  as select from ZPB_R_MT_TAX_DATA
+{
+  key Bukrs,
+  key Belnr,
+  key Gjahr,
+
+  @Semantics.amount.currencyCode: 'Currency'
+  sum(
+    case
+      when shkzg = 'S' then hwste
+      when shkzg = 'H' then hwste * -1
+      else cast( 0 as abap.curr( 15, 2 ) )
+    end
+  ) as FiTaxTotal,
+
+  Currency
+}
+group by
+  Bukrs,
+  Belnr,
+  Gjahr,
+  Currency

@@ -1,0 +1,179 @@
+CLASS lhc_PayBlock DEFINITION INHERITING FROM cl_abap_behavior_handler.
+  PRIVATE SECTION.
+
+    METHODS get_instance_authorizations FOR INSTANCE AUTHORIZATION
+      IMPORTING keys REQUEST requested_authorizations FOR PayBlock RESULT result.
+
+    METHODS pbf FOR MODIFY
+      IMPORTING keys FOR ACTION PayBlock~pbf.
+
+
+
+    METHODS unblock FOR MODIFY
+      IMPORTING keys FOR ACTION PayBlock~unblock RESULT result.
+    METHODS process FOR MODIFY
+      IMPORTING keys FOR ACTION PayBlock~process.
+
+ENDCLASS.
+
+CLASS lhc_PayBlock IMPLEMENTATION.
+
+  METHOD get_instance_authorizations.
+  ENDMETHOD.
+
+  METHOD pbf.
+   MODIFY ENTITIES OF ZPB_I_2A_PAY_BLOCK_LY4 IN LOCAL MODE
+    ENTITY PayBlock
+    UPDATE FIELDS ( p_block )
+    WITH VALUE #(
+      FOR key IN keys
+      (
+        %tky = key-%param
+        p_block = COND abap_boolean(
+                WHEN key-%param-pbf = abap_true
+                THEN abap_true
+                ELSE abap_false )
+        %control-p_block = if_abap_behv=>mk-on
+      )
+    )
+    FAILED failed
+    REPORTED reported.
+  ENDMETHOD.
+
+
+
+  METHOD unblock.
+  ENDMETHOD.
+
+  METHOD process.
+
+    DATA lo_processor TYPE REF TO zcl_pb_processor.
+
+*    AUTHORITY-CHECK OBJECT 'ZCYG_BUPLA'
+*      ID 'ACTVT' FIELD '01'.
+*
+*    IF sy-subrc <> 0.
+*
+*      AUTHORITY-CHECK OBJECT 'ZCYG_BUPLA'
+*        ID 'ACTVT' FIELD '02'.
+*
+*    ENDIF.
+*
+*    IF sy-subrc <> 0.
+*
+*      LOOP AT keys ASSIGNING FIELD-SYMBOL(<key>).
+*
+*        APPEND VALUE #(
+*          %tky = <key>-%cid
+*        ) TO failed-payblock.
+*
+*        APPEND VALUE #(
+*          %tky = <key>-%cid
+*          %msg = new_message(
+*            id       = 'ZPB'
+*            number   = '001'
+*            severity = if_abap_behv_message=>severity-error
+*            v1 =
+*              'You are not Authorized for Process for Block/Unblock'
+*          )
+*        ) TO reported-payblock.
+*
+*      ENDLOOP.
+*
+*      RETURN.
+*
+*    ENDIF.
+
+
+
+    READ ENTITIES OF zpb_i_2a_pay_block_ly4 IN LOCAL MODE
+      ENTITY PayBlock
+      ALL FIELDS WITH CORRESPONDING #( keys )
+      RESULT DATA(lt_data)
+      FAILED DATA(lt_failed)
+      REPORTED DATA(lt_reported).
+
+
+
+    DATA(ls_param) = keys[ 1 ]-%param.
+
+    lo_processor =
+      NEW zcl_pb_processor(
+        iv_p_pbf    = ls_param-pbf
+        iv_p_jv     = ls_param-jv
+        iv_p_dbf    = ls_param-dbf
+        iv_p_daf    = ls_param-dbf              " change
+        iv_p_dbf_cl = ls_param-dbf_cl
+        iv_p_dbf_op = ls_param-dbf_op
+        iv_p_daf_cl = ls_param-daf_cl
+        iv_p_daf_op = ls_param-daf_op ).
+
+*--------------------------------------------------------------------*
+* Process selected documents
+*--------------------------------------------------------------------*
+
+    LOOP AT lt_data ASSIGNING FIELD-SYMBOL(<data>).
+
+    DATA(ls_data) = CORRESPONDING zpb_i_2a_pay_block_ly4( <data> ).
+      lo_processor->process(
+        CHANGING
+          cs_data = ls_data ).
+
+*--------------------------------------------------------------------*
+* Update RAP entity
+*--------------------------------------------------------------------*
+
+      MODIFY ENTITIES OF zpb_i_2a_pay_block_ly4 IN LOCAL MODE
+        ENTITY PayBlock
+        UPDATE FIELDS (
+          status
+          message
+          releasecomment
+          releasedon
+          releasedat
+          releasedby
+          jvrevcompcode
+          jvrevdocnum
+          jvrevyear
+          jvrevcomment
+          jvreversedon
+          jvreversedat
+          jvreversedby
+          splityear
+        )
+        WITH VALUE #(
+          (
+            %tky = <data>-%tky
+
+            status = <data>-status
+            message = <data>-message
+            releasecomment = <data>-releasecomment
+            releasedon = <data>-releasedon
+            releasedat = <data>-releasedat
+            releasedby = <data>-releasedby
+
+            jvrevcompcode = <data>-jvrevcompcode
+            jvrevdocnum = <data>-jvrevdocnum
+            jvrevyear = <data>-jvrevyear
+            jvrevcomment = <data>-jvrevcomment
+            jvreversedon = <data>-jvreversedon
+            jvreversedat = <data>-jvreversedat
+            jvreversedby = <data>-jvreversedby
+
+            splityear = <data>-splityear
+          )
+        ).
+
+*--------------------------------------------------------------------*
+* Return result
+*--------------------------------------------------------------------*
+
+*      APPEND VALUE #(
+*        %tky = <data>-%tky
+*      ) TO result.
+
+    ENDLOOP.
+
+  ENDMETHOD.
+
+ENDCLASS.

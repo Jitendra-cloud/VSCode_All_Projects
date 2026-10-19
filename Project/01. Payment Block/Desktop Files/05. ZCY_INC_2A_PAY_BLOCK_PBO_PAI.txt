@@ -1,0 +1,79 @@
+*&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&*
+
+* Objective                 : Hold SAP GST amount via JV               *
+
+* Business Vertical         : <All Verticals JSW>                      *
+
+* Plant/Location Specific   : All Plants                               *
+
+* Department Name           : <Purchase/PPC/Store/FI>                  *
+
+* Department Head Name/Email: < abc@xyz.com>                           *
+
+* SAP Module                : <SD/MM/FI>                               *
+
+* Technical Consultant      : Paresh Patel                             *
+
+* Functional Consultant     : Pratik                                   *
+
+* CR#                       : < S 9000054361 >                         *
+
+* Object ID                 : < PPRP0XXX>                              *
+
+* Creation Date             : <12/12/2025>                             *
+
+*&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&*
+
+* Change History                                                       *
+
+*----------------------------------------------------------------------*
+
+* Version |   Date    |  User    |   TR number   | Description         *
+
+*----------------------------------------------------------------------*
+
+*&---------------------------------------------------------------------*
+
+*&  Include           ZCY_INC_2A_PAY_BLOCK_PBO_PAI
+
+*&---------------------------------------------------------------------*
+
+*--------------------------------------------------------------------*
+
+* Screen/Dynpro Events
+
+*--------------------------------------------------------------------*
+
+module pbo_100 output.
+
+  " execute only once, when displaying alv for the first time
+
+  if lcl_app=>mv_init eq abap_false.
+
+    lcl_app=>get_instance( )->init_alv_screen( ).
+
+    lcl_app=>mv_init = abap_true.
+
+  endif.
+
+endmodule.
+
+module pai_100 input.
+
+  data ok_code like sy-ucomm.
+
+  lcl_app=>get_instance( )->process_user_command(
+
+    exporting
+
+      iv_ucomm = ok_code ).
+
+  clear ok_code.
+
+endmodule.
+
+module exit input.
+
+  lcl_app=>get_instance( )->exit( ).
+
+endmodule.

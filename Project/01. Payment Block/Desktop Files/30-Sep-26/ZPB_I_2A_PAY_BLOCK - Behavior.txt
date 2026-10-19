@@ -1,0 +1,10 @@
+managed implementation in class zbp_pb_i_2a_pay_block unique;
+strict ( 2 );
+
+define behavior for ZPB_I_2A_PAY_BLOCK
+persistent table z2a_t_pay_block
+lock master
+authorization master
+{
+  action block result [1] $self;
+}

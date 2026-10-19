@@ -1,0 +1,7 @@
+REPORT zcy_prg_2a_pay_block.
+
+INCLUDE zcy_inc_2a_pay_block_lcl_def1.    " Local class definitions
+INCLUDE zcy_inc_2a_pay_block_sel_scr1.    " Selection screen
+INCLUDE zcy_inc_2a_pay_block_lcl_imp1.    " Local class implementations
+INCLUDE zcy_inc_2a_pay_block_main1.       " Main processing
+INCLUDE zcy_inc_2a_pay_block_pbo_pai1.    " Screen flow logic

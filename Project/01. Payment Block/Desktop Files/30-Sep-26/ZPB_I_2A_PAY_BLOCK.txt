@@ -1,0 +1,205 @@
+@AbapCatalog.viewEnhancementCategory: [#NONE]
+
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+
+@EndUserText.label: 'Interface for Pay block'
+
+@Metadata.ignorePropagatedAnnotations: true
+
+define view entity ZPB_I_2A_PAY_BLOCK
+
+as select from z2a_t_pay_block
+
+{
+
+key custom1 as Custom1**,**
+
+key custom4 as Custom4**,**
+
+key custom9 as Custom9**,**
+
+  returnperiod           **as** Returnperiod**,**
+
+  locationgstin          **as** Locationgstin**,**
+
+  documentnumber         **as** Documentnumber**,**
+
+  documentdate           **as** Documentdate**,**
+
+  financialyear          **as** Financialyear**,**
+
+  @Semantics.amount.currencyCode : 'currency'
+
+  fi_doc_value           **as** FiDocValue**,**
+
+  @Semantics.amount.currencyCode : 'currency'
+
+  fi_tax_value           **as** FiTaxValue**,**
+
+  fi_tax_code            **as** FiTaxCode**,**
+
+  @Semantics.amount.currencyCode : 'currency'
+
+  fi_tax_rate            **as** FiTaxRate**,**
+
+  status                 **as** Status**,**
+
+  gst_part               **as** GstPart**,**
+
+  vendor                 **as** Vendor**,**
+
+  mindk                  **as** Mindk**,**
+
+  vendor_block_type      **as** VendorBlockType**,**
+
+  payment_due_date       **as** PaymentDueDate**,**
+
+  clearing_no            **as** ClearingNo**,**
+
+  clearing_date          **as** ClearingDate**,**
+
+  expected_filing_date   **as** ExpectedFilingDate**,**
+
+  due_date_before_filing **as** DueDateBeforeFiling**,**
+
+  cleared_before_filing  **as** ClearedBeforeFiling**,**
+
+  grc_check_applicable   **as** GrcCheckApplicable**,**
+
+  grc_checked_on         **as** GrcCheckedOn**,**
+
+  grc_checked_at         **as** GrcCheckedAt**,**
+
+  grc_checked_by         **as** GrcCheckedBy**,**
+
+  grc_score              **as** GrcScore**,**
+
+  gstr3b_score           **as** Gstr3bScore**,**
+
+  grc_check_result       **as** GrcCheckResult**,**
+
+  grc_check_comment      **as** GrcCheckComment**,**
+
+  blocked_on             **as** BlockedOn**,**
+
+  blocked_at             **as** BlockedAt**,**
+
+  blocked_by             **as** BlockedBy**,**
+
+  block_comment          **as** BlockComment**,**
+
+  split_comp_code        **as** SplitCompCode**,**
+
+  split_gst_doc_num      **as** SplitGstDocNum**,**
+
+  split_year             **as** SplitYear**,**
+
+  split_on               **as** SplitOn**,**
+
+  split_at               **as** SplitAt**,**
+
+  split_by               **as** SplitBy**,**
+
+  split_comment          **as** SplitComment**,**
+
+  split_rev_comp_code    **as** SplitRevCompCode**,**
+
+  split_rev_doc_num      **as** SplitRevDocNum**,**
+
+  split_rev_year         **as** SplitRevYear**,**
+
+  split_rev_on           **as** SplitRevOn**,**
+
+  split_rev_at           **as** SplitRevAt**,**
+
+  split_rev_by           **as** SplitRevBy**,**
+
+  split_rev_comment      **as** SplitRevComment**,**
+
+  jv_comp_code           **as** JvCompCode**,**
+
+  jv_doc_num             **as** JvDocNum**,**
+
+  jv_year                **as** JvYear**,**
+
+  jv_posted_on           **as** JvPostedOn**,**
+
+  jv_posted_at           **as** JvPostedAt**,**
+
+  jv_posted_by           **as** JvPostedBy**,**
+
+  jv_comment             **as** JvComment**,**
+
+  jv_rev_comp_code       **as** JvRevCompCode**,**
+
+  jv_rev_doc_num         **as** JvRevDocNum**,**
+
+  jv_rev_year            **as** JvRevYear**,**
+
+  jv_reversed_on         **as** JvReversedOn**,**
+
+  jv_reversed_at         **as** JvReversedAt**,**
+
+  jv_reversed_by         **as** JvReversedBy**,**
+
+  jv_rev_comment         **as** JvRevComment**,**
+
+  released_on            **as** ReleasedOn**,**
+
+  released_at            **as** ReleasedAt**,**
+
+  released_by            **as** ReleasedBy**,**
+
+  release_comment        **as** ReleaseComment**,**
+
+  debit_note_comp        **as** DebitNoteComp**,**
+
+  debit_note_num         **as** DebitNoteNum**,**
+
+  debit_note_year        **as** DebitNoteYear**,**
+
+  debit_note_posted_on   **as** DebitNotePostedOn**,**
+
+  debit_note_posted_at   **as** DebitNotePostedAt**,**
+
+  debit_note_posted_by   **as** DebitNotePostedBy**,**
+
+  debit_note_comment     **as** DebitNoteComment**,**
+
+  debit_note_rev_comp    **as** DebitNoteRevComp**,**
+
+  debit_note_rev_num     **as** DebitNoteRevNum**,**
+
+  debit_note_rev_year    **as** DebitNoteRevYear**,**
+
+  debit_note_reversed_on **as** DebitNoteReversedOn**,**
+
+  debit_note_reversed_at **as** DebitNoteReversedAt**,**
+
+  debit_note_reversed_by **as** DebitNoteReversedBy**,**
+
+  debit_note_rev_comment **as** DebitNoteRevComment**,**
+
+  message                **as** Message**,**
+
+  last_checked_on        **as** LastCheckedOn**,**
+
+  last_checked_at        **as** LastCheckedAt**,**
+
+  last_checked_by        **as** LastCheckedBy**,**
+
+  processing_options     **as** ProcessingOptions**,**
+
+  wronggst               **as** Wronggst**,**
+
+  gstin                  **as** Gstin**,**
+
+  gstin_part             **as** GstinPart**,**
+
+  documenttype           **as** Documenttype**,**
+
+  remark                 **as** Remark**,**
+
+  currency
+
+}

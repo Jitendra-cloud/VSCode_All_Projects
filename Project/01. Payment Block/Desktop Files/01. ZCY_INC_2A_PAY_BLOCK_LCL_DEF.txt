@@ -1,0 +1,674 @@
+*&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&*
+* Objective                 : Hold SAP GST amount via JV               *
+* Business Vertical         : <All Verticals JSW>                      *
+* Plant/Location Specific   : All Plants                               *
+* Department Name           : <Purchase/PPC/Store/FI>                  *
+* Department Head Name/Email: < abc@xyz.com>                           *
+* SAP Module                : <SD/MM/FI>                               *
+* Technical Consultant      : Avinash Maity                             *
+* Functional Consultant     : Pratik                                   *
+* CR#                       : < S 9000054361 >                         *
+* Object ID                 : < PPRP0XXX>                              *
+* Creation Date             : <12/12/2025>                             *
+*&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&*
+* Change History                                                       *
+*----------------------------------------------------------------------*
+* Version |   Date    |  User    |   TR number   | Description         *
+*----------------------------------------------------------------------*
+*&---------------------------------------------------------------------*
+*&  Include           ZCY_INC_2A_PAY_BLOCK_LCL_DEF
+*&---------------------------------------------------------------------*
+*--------------------------------------------------------------------*
+* Local Class Definition
+*--------------------------------------------------------------------*
+" Generic exception class
+CLASS lcx_generic DEFINITION
+  INHERITING FROM cx_static_check.
+
+  PUBLIC SECTION.
+    INTERFACES:
+      if_t100_message,
+      if_t100_dyn_msg.
+ENDCLASS.
+
+CLASS lcl_app DEFINITION
+  CREATE PRIVATE
+  FINAL.
+
+  PUBLIC SECTION.
+    CONSTANTS:
+      mc_save_all TYPE kkblo_layout-save VALUE 'A',
+
+      BEGIN OF mcs_msg_type,
+        success     TYPE syst-msgty VALUE 'S',
+        information TYPE syst-msgty VALUE 'I',
+        warning     TYPE syst-msgty VALUE 'W',
+        abend       TYPE syst-msgty VALUE 'A',
+        error       TYPE syst-msgty VALUE 'E',
+        unknown     TYPE syst-msgty VALUE 'X',
+      END OF mcs_msg_type.
+
+    CLASS-DATA:
+      mv_doc_date TYPE bkpf-bldat,
+      mv_init     TYPE abap_bool,
+      ms_variant  TYPE disvariant.
+
+    CLASS-METHODS:
+      layout_variant_selection,
+      check_layout_variant_existence,
+      initialize_layout_variant,
+      sel_screen_pbo,
+      sel_screen_pai,
+
+      get_instance
+        RETURNING
+          VALUE(ro_app) TYPE REF TO lcl_app.
+
+    METHODS:
+      init_alv_screen,
+
+      process
+        RAISING lcx_generic,
+
+      process_user_command
+        IMPORTING
+          VALUE(iv_ucomm) LIKE sy-ucomm,
+
+      on_hotspot_click FOR EVENT hotspot_click OF cl_gui_alv_grid
+        IMPORTING e_row_id e_column_id es_row_no,
+
+      exit.
+
+  PRIVATE SECTION.
+    TYPES:
+      mrtty_doc_date TYPE RANGE OF zcy_str_2a_pay_block-documentdate,
+
+      BEGIN OF msty_message,
+        number TYPE bapiret2-number,
+        id     TYPE bapiret2-id,
+      END OF msty_message.
+
+    CLASS-DATA mo_app TYPE REF TO lcl_app.
+    DATA:CO_date TYPE sy-datum.
+
+    CONSTANTS:
+      BEGIN OF mcs_doc_status,
+        unprocessed             TYPE zcy_str_2a_pay_block-status VALUE '',
+        blocked                 TYPE zcy_str_2a_pay_block-status VALUE 'B',
+        split                   TYPE zcy_str_2a_pay_block-status VALUE 'S',
+        released                TYPE zcy_str_2a_pay_block-status VALUE 'R',
+        ireleased               TYPE zcy_str_2a_pay_block-status VALUE 'I',
+        matched                 TYPE zcy_str_2a_pay_block-status VALUE 'M',
+        exempted                TYPE zcy_str_2a_pay_block-status VALUE 'X',
+        waiting_for_filing_date TYPE zcy_str_2a_pay_block-status VALUE 'W',
+        debit_note_posted       TYPE zcy_str_2a_pay_block-status VALUE 'D',
+      END OF mcs_doc_status,
+
+      BEGIN OF mcs_vendor_block_type,
+        exempted TYPE zcy_str_2a_pay_block-vendor_block_type VALUE 'X',
+        block    TYPE zcy_str_2a_pay_block-vendor_block_type VALUE 'B',
+        split    TYPE zcy_str_2a_pay_block-vendor_block_type VALUE 'S',
+      END OF mcs_vendor_block_type,
+
+      BEGIN OF mcs_yes_no,
+        yes TYPE zcy_str_2a_pay_block-due_date_before_filing VALUE 'Y',
+        no  TYPE zcy_str_2a_pay_block-due_date_before_filing VALUE 'N',
+      END OF mcs_yes_no,
+
+      BEGIN OF mcs_grc_result,
+        success TYPE zcy_str_2a_pay_block-grc_check_result VALUE 'S',
+        failed  TYPE zcy_str_2a_pay_block-grc_check_result VALUE 'F',
+      END OF mcs_grc_result,
+
+      BEGIN OF mcs_reco_status_cat,
+        matched    TYPE zcy_t_2a_recstat-category VALUE 'M',
+        mismatched TYPE zcy_t_2a_recstat-category VALUE 'B',
+        exempted   TYPE zcy_t_2a_recstat-category VALUE 'X',
+      END OF mcs_reco_status_cat,
+
+      BEGIN OF mcs_dc_ind,
+        debit  TYPE shkzg VALUE 'S',
+        credit TYPE shkzg VALUE 'H',
+      END OF mcs_dc_ind,
+
+      BEGIN OF mcs_ucomm,
+        back     TYPE syst-ucomm VALUE '&F03',
+        exit     TYPE syst-ucomm VALUE '&F15',
+        cancel   TYPE syst-ucomm VALUE '&F12',
+        process  TYPE syst-ucomm VALUE '&PROCESS',
+        transfer TYPE syst-ucomm VALUE '&TRANSFER',
+        block    TYPE syst-ucomm VALUE '&UNBLOCK1',
+        blockp   TYPE syst-ucomm VALUE '&BLOCK',
+      END OF mcs_ucomm,
+
+      BEGIN OF mcs_acc_type,
+        vendor   TYPE bseg-koart VALUE 'K',
+        customer TYPE bseg-koart VALUE 'D',
+        gl       TYPE bseg-koart VALUE 'S',
+      END OF mcs_acc_type,
+
+      mc_split_spl_gl_ind TYPE bseg-umskz VALUE 'A'.
+
+    DATA:
+      mo_alv  TYPE REF TO cl_gui_alv_grid,
+      ms_data TYPE zcy_str_2a_pay_block,
+      mt_data LIKE STANDARD TABLE OF ms_data,
+      lt_grc  TYPE STANDARD TABLE OF zgrc_control,
+      ls_grc  TYPE  zgrc_control,
+      ok      TYPE sy-ucomm,
+      ok_auth TYPE char1,
+      grc     TYPE i,
+      BEGIN OF ms_jv_applicability,
+        blocked    TYPE abap_bool,
+        split      TYPE abap_bool,
+        debit_note TYPE abap_bool,
+      END OF ms_jv_applicability,
+
+      BEGIN OF ms_doc_clearing_state,
+        cleared TYPE abap_bool,
+        open    TYPE abap_bool,
+      END OF ms_doc_clearing_state,
+
+      BEGIN OF ms_processing_options,
+        wait_for_filing   TYPE abap_bool,
+        jv_applicability  LIKE ms_jv_applicability,
+        due_before_filing LIKE ms_doc_clearing_state,
+        due_after_filing  LIKE ms_doc_clearing_state,
+      END OF ms_processing_options.
+
+    DATA:
+      mrt_matched    LIKE RANGE OF ms_data-reconciliationsection,
+      mrt_mismatched LIKE RANGE OF ms_data-reconciliationsection,
+      mrt_exempted   LIKE RANGE OF ms_data-reconciliationsection.
+
+
+    DATA:
+      mt_vendor_block_type TYPE SORTED TABLE OF zcy_t_2a_blk_typ
+        WITH UNIQUE KEY primary_key
+          COMPONENTS
+            vendor,
+
+      BEGIN OF ms_vendor_data,
+        vendor TYPE lfa1-lifnr,
+        name   TYPE lfa1-name1,
+        stcd3  TYPE lfa1-stcd3,
+        brsch  TYPE lfa1-brsch,
+        brtxt  TYPE t016t-brtxt,
+      END OF ms_vendor_data,
+
+      mt_vendor_data LIKE SORTED TABLE OF ms_vendor_data
+        WITH UNIQUE KEY primary_key
+          COMPONENTS
+            vendor,
+
+      BEGIN OF ms_vendor_data_m,
+        bukrs  TYPE lfb1-bukrs,
+        vendor TYPE lfa1-lifnr,
+        mindk  TYPE lfb1-mindk,
+*        STCD3  TYPE lfa1-stcd3,
+      END OF ms_vendor_data_m,
+
+      mt_vendor_data_m LIKE STANDARD TABLE OF  ms_vendor_data_m,
+
+      BEGIN OF ms_acc_doc,
+        bukrs TYPE bseg-bukrs,
+        belnr TYPE bseg-belnr,
+        gjahr TYPE bseg-gjahr,
+      END OF ms_acc_doc,
+
+      mt_acc_doc LIKE STANDARD TABLE OF ms_acc_doc,
+
+      BEGIN OF ms_acc_data,
+        bukrs    TYPE bseg-bukrs,
+        belnr    TYPE bseg-belnr,
+        gjahr    TYPE bseg-gjahr,
+        bldat    TYPE bkpf-bldat,
+        budat    TYPE bkpf-budat,
+        cpudt    TYPE bkpf-cpudt,
+        xblnr    TYPE bkpf-xblnr,
+        bktxt    TYPE bkpf-bktxt,
+        awtyp    TYPE bkpf-awtyp,
+        awkey    TYPE bkpf-awkey,
+        awsys    TYPE bkpf-awsys,
+        blart    TYPE bkpf-blart,
+        glvor    TYPE bkpf-glvor,
+        buzei    TYPE bseg-buzei,
+        buzid    TYPE bseg-buzid,
+        augdt    TYPE bseg-augdt,
+        dmbtr    TYPE bseg-dmbtr,
+        zfbdt    TYPE bseg-zfbdt,
+        zbd1t    TYPE bseg-zbd1t,
+        zbd2t    TYPE bseg-zbd2t,
+        zbd3t    TYPE bseg-zbd3t,
+        koart    TYPE bseg-koart,
+        shkzg    TYPE bseg-shkzg,
+        lifnr    TYPE bseg-lifnr,
+        kunnr    TYPE bseg-kunnr,
+        rebzg    TYPE bseg-rebzg,
+        zuonr    TYPE bseg-zuonr,
+        sgtxt    TYPE bseg-sgtxt,
+        mwskz    TYPE bseg-mwskz,
+        zlspr    TYPE bseg-zlspr,
+        umskz    TYPE bseg-umskz,
+        prctr    TYPE bseg-prctr,
+        gsber    TYPE bseg-gsber,
+        kostl    TYPE bseg-kostl,
+        bupla    TYPE bseg-bupla,
+        secco    TYPE bseg-secco,
+        hsn_sac  TYPE bseg-hsn_sac,
+        gst_part TYPE bseg-gst_part,
+        augbl    TYPE bseg-augbl,
+        zterm    TYPE bseg-zterm,
+*        BLINE_DATE    TYPE BSEG-BLINE_DATE,
+      END OF ms_acc_data,
+
+      mt_acc_data   LIKE SORTED TABLE OF ms_acc_data
+        WITH UNIQUE KEY primary_key
+          COMPONENTS
+            bukrs
+            belnr
+            gjahr
+            buzei
+        WITH NON-UNIQUE SORTED KEY sec_key
+          COMPONENTS
+            bukrs
+            belnr
+            gjahr
+            koart
+        WITH NON-UNIQUE SORTED KEY line_type_key  ##TABKEY[SEC_KEY][PRIMARY_KEY]
+          COMPONENTS
+            bukrs
+            belnr
+            gjahr
+            buzid,
+
+      mt_acc_data_k LIKE TABLE OF ms_acc_data,
+
+
+      BEGIN OF ms_tax_data,
+        bukrs TYPE bset-bukrs,
+        belnr TYPE bset-belnr,
+        gjahr TYPE bset-gjahr,
+        buzei TYPE bset-buzei,
+        mwskz TYPE bset-mwskz,
+        txgrp TYPE bset-txgrp,
+        taxps TYPE bset-taxps,
+        ktosl TYPE bset-ktosl,
+        kschl TYPE bset-kschl,
+        kbetr TYPE bset-kbetr,
+        hwbas TYPE bset-hwbas,
+        hwste TYPE bset-hwste,
+        shkzg TYPE bset-shkzg,
+        hkont TYPE bset-hkont,
+      END OF ms_tax_data,
+
+      BEGIN OF ms_bsik,
+        bukrs TYPE bsik-bukrs,
+        gjahr TYPE bsik-gjahr,
+        belnr TYPE bsik-belnr,
+        buzei TYPE bsik-buzei,
+        zlspr TYPE bsik-zlspr,
+        zterm TYPE bsik-zterm,
+        augbl TYPE bsik-augbl,
+        dmbtr TYPE bsik-dmbtr,
+      END OF ms_bsik,
+      lt_bsik     LIKE STANDARD TABLE OF ms_bsik,
+      lt_tvarc    TYPE STANDARD TABLE OF tvarvc,
+
+      mt_tax_data LIKE SORTED TABLE OF ms_tax_data
+        WITH UNIQUE KEY primary_key
+          COMPONENTS
+            bukrs
+            belnr
+            gjahr
+            buzei
+        WITH NON-UNIQUE SORTED KEY sec_key
+          COMPONENTS
+            bukrs
+            belnr
+            gjahr.
+
+    METHODS:
+      set_globals
+        RAISING
+          lcx_generic,
+
+      prepare_data
+        RAISING lcx_generic,
+
+      get_db_data
+        RAISING lcx_generic,
+
+      get_2a_data
+        RAISING lcx_generic,
+
+      get_acc_data,
+      complete_data,
+
+      fill_acc_data
+        CHANGING
+          cs_data LIKE ms_data,
+
+      fill_status_relevant_data
+        CHANGING
+          cs_data LIKE ms_data,
+
+      determne_exp_filing_date
+        IMPORTING
+          iv_doc_date               LIKE ms_data-documentdate
+          iv_vendor                 LIKE ms_data-vendor
+        RETURNING
+          VALUE(rv_exp_filing_date) LIKE ms_data-expected_filing_date,
+
+      derive_status_icon
+        CHANGING
+          cs_data LIKE ms_data,
+
+      get_domain_values
+        IMPORTING
+          iv_domain_name         TYPE dd07l-domname
+        RETURNING
+          VALUE(rt_domain_value) TYPE dd07v_tab,
+
+      fill_status_independent_data
+        CHANGING
+          cs_data LIKE ms_data,
+
+      get_char_date_range
+        RETURNING
+          VALUE(rt_date) TYPE mrtty_doc_date,
+
+      display_alv,
+
+      fill_reco_status_range
+        RAISING
+          lcx_generic,
+
+      process_documents
+        RETURNING
+          VALUE(rv_processed) TYPE abap_bool,
+
+      process_documents_blk
+        RETURNING
+          VALUE(rv_processed) TYPE abap_bool,
+
+      process_documents_blk1
+        RETURNING
+          VALUE(rv_processed) TYPE abap_bool,
+
+      check_prev_proc_consistency
+        RETURNING
+          VALUE(rv_processed) TYPE abap_bool,
+
+      process_unprocessed
+        CHANGING
+          cs_data LIKE ms_data,
+
+      process_dbf
+        CHANGING
+          cs_data LIKE ms_data,
+
+      process_dbf_cleared
+        CHANGING
+          cs_data LIKE ms_data,
+
+      process_dbf_open
+        CHANGING
+          cs_data LIKE ms_data,
+
+      process_daf
+        CHANGING
+          cs_data LIKE ms_data,
+
+      process_daf_cleared
+        CHANGING
+          cs_data LIKE ms_data,
+
+      process_daf_open
+        CHANGING
+          cs_data LIKE ms_data,
+
+      block_open_document
+        CHANGING
+          cs_data           LIKE ms_data
+        RETURNING
+          VALUE(rv_blocked) TYPE abap_bool,
+
+      toggle_payment_block
+        IMPORTING
+          iv_doc_num        TYPE bkpf-belnr
+          iv_comp_code      TYPE bkpf-bukrs
+          iv_fis_year       TYPE bkpf-gjahr
+        EXPORTING
+          ev_message        LIKE ms_data-block_comment
+        RETURNING
+          VALUE(rv_toggled) TYPE abap_bool,
+
+      perform_grc_check
+        IMPORTING
+          iv_vendor        TYPE bseg-lifnr
+        EXPORTING
+          ev_score         LIKE ms_data-grc_score
+          ev_message       LIKE ms_data-grc_check_comment
+        RETURNING
+          VALUE(rv_result) LIKE ms_data-grc_check_result,
+
+      split_document
+        IMPORTING
+          iv_doc_num      TYPE bkpf-belnr
+          iv_comp_code    TYPE bkpf-bukrs
+          iv_fis_year     TYPE bkpf-gjahr
+          iv_vendor       TYPE bseg-lifnr
+          iv_gst_amt      LIKE ms_data-fi_tax_value
+        EXPORTING
+          ev_comp_code    LIKE ms_data-split_comp_code
+          ev_doc_num      LIKE ms_data-split_gst_doc_num
+          ev_fis_year     LIKE ms_data-split_year
+          ev_message      LIKE ms_data-split_comment
+        RETURNING
+          VALUE(rv_split) TYPE abap_bool,
+
+      post_jv
+        IMPORTING
+          iv_doc_num       TYPE bkpf-belnr
+          iv_comp_code     TYPE bkpf-bukrs
+          iv_fis_year      TYPE bkpf-gjahr
+          iv_gst_amount    LIKE ms_data-fi_tax_value
+        EXPORTING
+          ev_comp_code     LIKE ms_data-jv_comp_code
+          ev_doc_num       LIKE ms_data-jv_doc_num
+          ev_fis_year      LIKE ms_data-jv_year
+          ev_message       LIKE ms_data-jv_comment
+        RETURNING
+          VALUE(rv_posted) TYPE abap_bool,
+
+      block_cleared_document
+        CHANGING
+          cs_data           LIKE ms_data
+        RETURNING
+          VALUE(rv_blocked) TYPE abap_bool,
+
+      block_cleared_document_bk
+        CHANGING
+          cs_data           LIKE ms_data
+        RETURNING
+          VALUE(rv_blocked) TYPE abap_bool,
+
+      post_debit_note
+        IMPORTING
+          iv_doc_num       TYPE bkpf-belnr
+          iv_comp_code     TYPE bkpf-bukrs
+          iv_fis_year      TYPE bkpf-gjahr
+          iv_vendor        TYPE bseg-lifnr
+          iv_gst_amount    LIKE ms_data-fi_tax_value
+        EXPORTING
+          ev_comp_code     LIKE ms_data-debit_note_comp
+          ev_doc_num       LIKE ms_data-debit_note_num
+          ev_fis_year      LIKE ms_data-debit_note_year
+          ev_message       LIKE ms_data-debit_note_comment
+        RETURNING
+          VALUE(rv_posted) TYPE abap_bool,
+
+      process_blocked
+        CHANGING
+          cs_data LIKE ms_data,
+
+      release_document
+        CHANGING
+          cs_data            LIKE ms_data
+        RETURNING
+          VALUE(rv_released) TYPE abap_bool,
+
+      reverse_debit_note
+        IMPORTING
+          iv_doc_num         TYPE bkpf-belnr
+          iv_comp_code       TYPE bkpf-bukrs
+          iv_fis_year        TYPE bkpf-gjahr
+        EXPORTING
+          ev_comp_code       LIKE ms_data-debit_note_rev_comp
+          ev_doc_num         LIKE ms_data-debit_note_rev_num
+          ev_fis_year        LIKE ms_data-debit_note_rev_year
+          ev_message         LIKE ms_data-debit_note_rev_comment
+        RETURNING
+          VALUE(rv_reversed) TYPE abap_bool,
+
+      reverse_jv
+        IMPORTING
+          iv_doc_num         TYPE bkpf-belnr
+          iv_comp_code       TYPE bkpf-bukrs
+          iv_fis_year        TYPE bkpf-gjahr
+        EXPORTING
+          ev_comp_code       LIKE ms_data-jv_rev_comp_code
+          ev_doc_num         LIKE ms_data-jv_rev_doc_num
+          ev_fis_year        LIKE ms_data-jv_rev_year
+          ev_message         LIKE ms_data-jv_rev_comment
+        RETURNING
+          VALUE(rv_reversed) TYPE abap_bool,
+
+      reverse_document
+        IMPORTING
+          iv_doc_num         TYPE bkpf-belnr
+          iv_comp_code       TYPE bkpf-bukrs
+          iv_fis_year        TYPE bkpf-gjahr
+        EXPORTING
+          ev_comp_code       TYPE bkpf-bukrs
+          ev_doc_num         TYPE bkpf-belnr
+          ev_fis_year        TYPE bkpf-gjahr
+          ev_message         LIKE ms_data-release_comment
+        RETURNING
+          VALUE(rv_reversed) TYPE abap_bool,
+
+      transfer_to_gst_hold_jv
+        RETURNING
+          VALUE(rv_processed) TYPE abap_bool,
+
+      update_db
+        IMPORTING
+          is_data           LIKE ms_data
+        RETURNING
+          VALUE(rv_updated) TYPE abap_bool,
+
+      get_log
+        EXPORTING
+          ev_date TYPE syst-datlo
+          ev_time TYPE syst-timlo
+          ev_user TYPE text80,
+
+      get_fiscal_year
+        IMPORTING
+          iv_comp_code          TYPE bkpf-bukrs
+          iv_date               TYPE syst-datlo DEFAULT sy-datlo
+        RETURNING
+          VALUE(rv_fiscal_year) TYPE bkpf-gjahr,
+
+      is_document_open
+        IMPORTING
+          iv_doc_num     TYPE bkpf-belnr
+          iv_comp_code   TYPE bkpf-bukrs
+          iv_fis_year    TYPE bkpf-gjahr
+        RETURNING
+          VALUE(rv_open) TYPE abap_bool,
+
+      check_document_posted
+        IMPORTING
+          iv_doc_num       TYPE bkpf-belnr
+          iv_comp_code     TYPE bkpf-bukrs
+          iv_fis_year      TYPE bkpf-gjahr
+        RETURNING
+          VALUE(rv_posted) TYPE abap_bool,
+
+      process_bapi_return
+        IMPORTING
+          is_success_msg    TYPE msty_message
+          it_return         TYPE bapiret2_t
+        EXPORTING
+          es_return         TYPE bapiret2
+        RETURNING
+          VALUE(rv_success) TYPE abap_bool,
+
+      get_processing_options
+        RETURNING
+          VALUE(rv_processing_options) LIKE ms_data-processing_options,
+
+      set_grid_fcat
+        RETURNING
+          VALUE(rt_fcat) TYPE lvc_t_fcat,
+
+      set_grid_layout
+        RETURNING
+          VALUE(rs_layout) TYPE lvc_s_layo,
+
+      set_grid_toolbar_excluding
+        RETURNING
+          VALUE(rt_toolbar_excluding) TYPE ui_functions,
+
+      set_grid_editable,
+
+      set_grid_event_handlers,
+
+      toolbar FOR EVENT toolbar OF cl_gui_alv_grid
+        IMPORTING
+          e_interactive
+          e_object
+          sender,
+
+      user_command FOR EVENT user_command OF cl_gui_alv_grid
+        IMPORTING
+          e_ucomm
+          sender,
+
+      data_changed FOR EVENT data_changed OF cl_gui_alv_grid
+        IMPORTING
+          er_data_changed
+          e_onf4
+          e_onf4_after
+          e_onf4_before
+          e_ucomm
+          sender,
+
+      data_changed_finished FOR EVENT data_changed_finished OF cl_gui_alv_grid
+        IMPORTING
+          e_modified
+          et_good_cells
+          sender,
+
+      after_user_command FOR EVENT after_user_command OF cl_gui_alv_grid
+        IMPORTING
+          e_ucomm
+          e_not_processed
+          e_saved
+          sender,
+
+      refresh_grid,
+      flush,
+      select_all,
+      deselect_all.
+ENDCLASS.
+
+CLASS lcl_main DEFINITION
+  CREATE PUBLIC
+  FINAL.
+
+  PUBLIC SECTION.
+    CLASS-METHODS: start.
+ENDCLASS.

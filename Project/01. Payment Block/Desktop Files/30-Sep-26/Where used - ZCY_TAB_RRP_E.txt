@@ -1,0 +1,10 @@
+Program                          Short description
+
+LZCYG_BTEU01                     Schnittstellenbeschreibung
+LZCYG_BTEU02                     Schnittstellenbeschreibung
+ZCYG_FB08_PUR_DOC_DEL            Cancel Payment Debit Note.
+ZCY_INC_2A_PAY_BLOCK_LCL_IMP1    Include ZCY_INC_2A_PAY_BLO
+ZCY_INC_2A_PAY_BLOCK_SEL_SCR1    Include ZCY_INC_2A_PAY_BLO
+ZFI_GSTR2A_UPDATE_FORM           Include ZFI_GSTR2A_UPDATE_
+ZFI_GSTR2A_UPDATE_SS             Include ZFI_GSTR2A_UPDATE_
+ZFI_GSTR2A_UPDATE_TOP            Include ZFI_GSTR2A_UPDATE_

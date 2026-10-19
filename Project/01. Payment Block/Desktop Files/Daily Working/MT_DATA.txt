@@ -1,0 +1,87 @@
+procstat	Not Available
+cbox	Not Available
+reco_stat	Not Available
+totaltax	Not Available
+status_desc	Not Available
+block_type_desc	Not Available
+vendor_name	Not Available
+blart	Not Available
+qblock	Not Available
+preconciliationsection	Not Available
+msme	Z2A_T_PAY_BLOCK
+financialyear	ZCY_TAB_RRP_E
+returnperiod	ZCY_TAB_RRP_E
+locationgstin	ZCY_TAB_RRP_E
+documentnumber	ZCY_TAB_RRP_E
+documentdate	ZCY_TAB_RRP_E
+custom1	ZCY_TAB_RRP_E
+custom4	ZCY_TAB_RRP_E
+custom9	ZCY_TAB_RRP_E
+documentvalue	ZCY_TAB_RRP_E
+pushstatus	ZCY_TAB_RRP_E
+pushdate	ZCY_TAB_RRP_E
+reconciliationsection	ZCY_TAB_RRP_E
+reason	ZCY_TAB_RRP_E
+filingdate	ZCY_TAB_RRP_E
+filingreturnperiod	ZCY_TAB_RRP_E
+filingstatus	ZCY_TAB_RRP_E
+rate	ZCY_TAB_RRP_E
+taxablevalue	ZCY_TAB_RRP_E
+igstamount	ZCY_TAB_RRP_E
+cgstamount	ZCY_TAB_RRP_E
+sgstamount	ZCY_TAB_RRP_E
+rec_date	ZCY_TAB_RRP_E
+rec_time	ZCY_TAB_RRP_E
+cpgstin	ZCY_TAB_RRP_E
+cptradename	ZCY_TAB_RRP_E
+cplegalname	ZCY_TAB_RRP_E
+cpdocumentnumber	ZCY_TAB_RRP_E
+cpdocumentdate	ZCY_TAB_RRP_E
+cpvalue	ZCY_TAB_RRP_E
+cppos	ZCY_TAB_RRP_E
+cpreversecharge	ZCY_TAB_RRP_E
+cptransactiontype	ZCY_TAB_RRP_E
+cptaxpayertype	ZCY_TAB_RRP_E
+cptaxablevalue	ZCY_TAB_RRP_E
+cprate	ZCY_TAB_RRP_E
+cpigstamount	ZCY_TAB_RRP_E
+cpcgstamount	ZCY_TAB_RRP_E
+cpsgstamount	ZCY_TAB_RRP_E
+cpcessamount	ZCY_TAB_RRP_E
+cpfilingstatus	ZCY_TAB_RRP_E
+cpfilingdate	ZCY_TAB_RRP_E
+cpfilingreturnperiod	ZCY_TAB_RRP_E
+isgstr3bfiled	ZCY_TAB_RRP_E
+isgstr3bfildate	ZCY_TAB_RRP_E
+cpitcavailability	ZCY_TAB_RRP_E
+cpreturnperiod	ZCY_TAB_RRP_E
+cpisamendment	ZCY_TAB_RRP_E
+cpavailableingstr2b	ZCY_TAB_RRP_E
+cpgstr2breturnperiod	ZCY_TAB_RRP_E
+cpavailableingstr98a	ZCY_TAB_RRP_E
+cpitcclaimmonth	ZCY_TAB_RRP_E
+billfromlegalname	ZCY_TAB_RRP_E
+billfromtradename	ZCY_TAB_RRP_E
+pos	ZCY_TAB_RRP_E
+reversecharge	ZCY_TAB_RRP_E
+transactiontype	ZCY_TAB_RRP_E
+taxpayertype	ZCY_TAB_RRP_E
+cessamount	ZCY_TAB_RRP_E
+isamendment	ZCY_TAB_RRP_E
+custom2	ZCY_TAB_RRP_E
+custom3	ZCY_TAB_RRP_E
+custom5	ZCY_TAB_RRP_E
+custom6	ZCY_TAB_RRP_E
+custom7	ZCY_TAB_RRP_E
+custom8	ZCY_TAB_RRP_E
+custom10	ZCY_TAB_RRP_E
+hsn	ZCY_TAB_RRP_E
+itceligibility	ZCY_TAB_RRP_E
+itcigstamount	ZCY_TAB_RRP_E
+itccgstamount	ZCY_TAB_RRP_E
+itcsgstamount	ZCY_TAB_RRP_E
+itccessamount	ZCY_TAB_RRP_E
+customitem3	ZCY_TAB_RRP_E
+valuediff	ZCY_TAB_RRP_E
+taxablediff	ZCY_TAB_RRP_E
+taxdiff	ZCY_TAB_RRP_E

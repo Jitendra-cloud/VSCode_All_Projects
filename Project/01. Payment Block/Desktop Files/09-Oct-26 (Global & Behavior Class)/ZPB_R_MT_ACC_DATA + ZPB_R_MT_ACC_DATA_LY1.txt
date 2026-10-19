@@ -1,0 +1,165 @@
+@AbapCatalog.viewEnhancementCategory: [#NONE]
+
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+
+@EndUserText.label: 'MT_ACC_DATA'
+
+//@Metadata.ignorePropagatedAnnotations: true
+
+define view entity ZPB_R_MT_ACC_DATA
+
+as select from bseg as a
+
+inner join bkpf as b on a**.bukrs = b.**bukrs
+
+                   **and** a**.**belnr **=** b**.**belnr
+
+                   **and** a**.**gjahr **=** b**.**gjahr
+
+inner join ZPB_R_MT_ACC_DOC_F as c on a**.bukrs = c.**BUKRS
+
+                               **and** a**.**belnr **=** c**.**BELNR
+
+                               **and** a**.**gjahr **=** c**.**GJAHR                    
+
+{
+
+key a**.bukrs as Bukrs,**
+
+key a**.belnr as Belnr,**
+
+key a**.gjahr as Gjahr,**
+
+b**.**bldat ,
+
+b**.budat,**
+
+b**.cpudt,**
+
+b**.xblnr,**
+
+b**.bktxt,**
+
+b**.awtyp,**
+
+b**.awkey,**
+
+b**.awsys,**
+
+b**.blart,**
+
+b**.glvor,**
+
+a**.buzei,**
+
+a**.buzid,**
+
+a**.augdt,**
+
+@Semantics.amount.currencyCode: 'hwaer'
+
+a**.dmbtr,**
+
+a**.zfbdt,**
+
+a**.zbd1t,**
+
+a**.zbd2t,**
+
+a**.zbd3t,**
+
+a**.koart,**
+
+a**.shkzg,**
+
+a**.lifnr,**
+
+a**.rebzg,**
+
+a**.zuonr,**
+
+a**.sgtxt,**
+
+a**.mwskz,**
+
+a**.zlspr,**
+
+a**.umskz,**
+
+a**.prctr,**
+
+a**.gsber,**
+
+a**.kostl,**
+
+a**.bupla,**
+
+a**.secco,**
+
+a**.hsn_sac,**
+
+a**.gst_part,**
+
+a**.augbl,**
+
+a**.zterm,**
+
+// only for UOM Reference
+
+b**.**hwaer
+
+}
+
+
+
+
+@AbapCatalog.viewEnhancementCategory: [#NONE]
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'MT_ACC_DATA_LY1'
+@Metadata.ignorePropagatedAnnotations: true
+define view entity ZPB_R_MT_ACC_DATA_LY1
+  as select distinct from ZPB_R_MT_ACC_DATA
+{
+  key Bukrs,
+  key Belnr,
+  key Gjahr,
+      bldat,
+      budat,
+      cpudt,
+      xblnr,
+      bktxt,
+      awtyp,
+      awkey,
+      awsys,
+      blart,
+      glvor,
+      buzei,
+      buzid,
+      augdt,
+      @Semantics.amount.currencyCode: 'hwaer'
+      dmbtr,
+      zfbdt,
+      zbd1t,
+      zbd2t,
+      zbd3t,
+      koart,
+      shkzg,
+      lifnr,
+      rebzg,
+      zuonr,
+      sgtxt,
+      mwskz,
+      zlspr,
+      umskz,
+      prctr,
+      gsber,
+      kostl,
+      bupla,
+      secco,
+      hsn_sac,
+      gst_part,
+      augbl,
+      zterm,
+      hwaer
+}
+where koart = 'K'
