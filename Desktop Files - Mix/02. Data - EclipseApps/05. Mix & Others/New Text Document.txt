@@ -1,0 +1,12 @@
+ZDJS_CSR_ATTS
+ZDJS_CSR_BLK
+ZDJS_DD07T				=  not uploaded
+ZDJS_MCMI
+ZDJS_T000
+ZDJS_T419S
+ZDJS_TA_BOM_PTYP			=	not uploaded
+ZDJS_TA_GBC_PTYP			=	not uploaded
+ZDJS_TA_STG_BOM
+ZDJS_TBDLS				=	not uploaded
+ZDJS_TCURC				=	not uploaded
+ZDJS_TLREV

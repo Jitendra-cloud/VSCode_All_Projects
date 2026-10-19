@@ -1,0 +1,69 @@
+CompanyCode;CompanyCodeName;CityName;Country;Currency;Language;ChartOfAccounts;FiscalYearVariant;Company;CreditControlArea;CountryChartOfAccounts;FinancialManagementArea;AddressID;TaxableEntity;VATRegistration;ExtendedWhldgTaxIsActive;ControllingArea;FieldStatusVariant;NonTaxableTransactionTaxCode;DocDateIsUsedForTaxDetn;TaxRptgDateIsActive;CashDiscountBaseAmtIsNetAmt
+CN01;Country Template CN;China;CN;CNY;1;CACN;K1;;0001;;;;;;;CN01;0001;X0;;;
+JP01;Country Template JP;Japan;JP;JPY;J;CAJP;V3;;0001;;;;;;;JP01;0001;A0;;;
+0001;SAP SE;Walldorf;DE;EUR;D;INT;K4;;0001;;;;0001;;;0001;0001;A0;;;
+0003;SAP US (IS-HT-SW);Palo Alto;US;USD;E;INT;K4;;AMER;;;;0001;;;0003;0001;A0;;;
+0MB1;IS-B Musterbank Deutschl.;Walldorf;DE;EUR;D;0MB1;K4;;;;;;;;;0MB1;0001;;;;
+AE01;Country Template AE;Dubai;AE;AED;E;INT;K4;;;;;;;;;AE01;0001;;;;
+AT01;Country Template AT;Austria;AT;EUR;D;INT;K4;;;;;;;;;0001;0001;A0;;;
+CA01;Country Template CA;Canada;CA;CAD;E;CANA;K4;;;;;;;;;CA01;0001;A0;;;
+CO01;Country Template CO;Colombia;CO;COP;S;CACO;K4;;;;;;;;X;CO01;0001;A0;;;
+CZ01;Country Template CZ;Czech Republic;CZ;CZK;C;CACZ;K4;;;;;;;CZ1234567890;;CZ01;0001;E0;;;
+DE02;Country Template DE;Germany;DE;EUR;D;IKR;K4;;;;;;0001;;;DE02;0001;A0;;;
+AR01;Country Template AR;Argentinien;AR;ARS;S;INT;K4;;;;;;;;X;0001;0001;D0;;;
+AU01;Country Template AU;Australia;AU;AUD;E;INT;V6;;;;;;AU01;;;AU01;0001;S0;;;X
+ES01;Country Template ES;Spain;ES;EUR;S;CAES;K4;;0001;;;;;ESA58379629;X;ES01;0001;R0;;;
+FI01;Country Template FI;Finland;FI;EUR;U;CAFI;K4;;;;;;;FI12345678;;FI01;0001;V0;;;
+FR01;Country Template FR;France;FR;EUR;F;CAFR;K4;;0001;;;;;;;FR01;0001;A0;;;X
+BR01;Country Template BR;Brazil;BR;BRL;P;INT;K4;;;;;;;;X;0001;0001;A0;;;
+CL01;Country Template CL;Chile;CL;CLP;S;INT;K4;;;;;;;;X;0001;0001;D0;;;
+DK01;Country Template DK;Denmark;DK;DKK;K;INT;K4;;;;;;;;;0001;0001;S0;;;X
+IT77;Country Template IT;Italy;IT;EUR;I;;K4;;;;;;;;;;;;;;
+KR01;Country Template KR;Seoul;KR;KRW;3;CAKR;K4;;0001;;;;;;X;KR01;0001;A0;;;
+EG01;Country Template Egypt;Cairo;EG;EGP;;INT;K4;;;;;;;;;0001;;;;;
+GB01;Country Template GB;Great Britain;GB;GBP;E;INT;K4;;;;;;;GB123456788;X;0001;0001;A0;;;
+MCA1;MCA Bank Backpack (bal.);Walldorf;DE;USD;D;BKMG;K4;MCA;;;;;;;;MCA;0001;A0;;;
+HK01;Country Template HK;Hong Kong;HK;HKD;E;INT;K4;;;;;;;;;0001;0001;;;;
+ID01;Country Template ID;Jakarta;ID;IDR;E;INT;K4;;;;;;;;;0001;;;;;
+NO01;Country Template NO;Norway;NO;NOK;O;CANO;K4;;;;;;;;;NO01;0001;U0;;;
+IE01;Country Template IE;Ireland;IE;EUR;E;INT;K4;;;;;;;IE12345678;;0001;0001;A0;;;
+PE01;Country Template PE;Perú;PE;PEN;S;CAPE;K4;;;;;;;;X;PE01;0001;D0;;;
+IN01;India Model Company, IN;Bangalore;IN;INR;E;CAIN;V3;;;;;;;;;IN01;0001;A7;;;
+PT01;Country Template PT;Portugal;PT;EUR;P;CAPT;K4;;0001;;;;;;;PT01;0001;L0;;;
+IT01;Country Template IT;Italy;IT;EUR;I;INT;K4;;;;;;;IT09417760155;;0001;0001;V0;;;X
+SE01;Country Template SE;Sweden;SE;SEK;V;CASE;K4;;;;;;;;;SE01;0001;U0;;;
+SG01;SAP Asia;Singapore;SG;SGD;E;INT;K4;;0001;;;;SG01;;;SG01;0001;A0;;;
+SK01;Country Template SK;Slovak Republic;SK;EUR;Q;CASK;K4;;;;;;;SK1234567890;;SK01;0001;Y0;;X;
+KW01;Country Template KW;Kuwait City;KW;KWD;A;INT;K4;KW01;0001;;;;;;;KW01;;;;;
+TR01;Country Template TR;Turkey;TR;TRY;T;CATR;K4;;;;;;;;X;TR01;0001;A0;;;
+TW01;Country Template TW;Taipei;TW;TWD;M;CATW;K4;;0001;;;;;;;TW01;0001;A0;;;
+UA01;Country Template UA;Ukraine;UA;UAH;8;CAUA;K4;;;;;;;;;UA01;0001;I0;;;
+LU01;Country Template LU;Luxembourg;LU;EUR;F;CABE;K4;;0001;;;;;LU000009797;;BE01;0001;A0;;;X
+MX01;Country Template MX;Mexico;MX;MXN;S;INT;K4;;;;;;;;X;0001;0001;A0;;;
+MY01;Country Template MY;Kuala Lumpur;MY;MYR;E;INT;K4;;;;;;;;;0001;0001;A0;;;
+NL01;Country Template NL;The Netherlands;NL;EUR;N;INT;K4;;;;;;;NL008209893B01;;0001;0001;A0;;;X
+BE01;Country Template BE;Belgium;BE;EUR;E;CABE;K4;;0001;;;;;BE000009797;;BE01;0001;A0;;;X
+NZ01;Country Template NZ;New Zealand;NZ;NZD;E;INT;K4;;0001;;;;;;;0001;0001;S0;;;X
+CH01;Country Template CH;Switzerland;CH;CHF;D;CACH;K4;;;;;;;;;CH01;0001;A0;;;
+PH01;Country Template PH;Manila;PH;PHP;E;INT;K4;;;;;;;;X;0001;0001;O0;;;
+DE01;Country Template DE;Germany;DE;EUR;D;GKR;K4;;;;;;0001;;;DE01;0001;A0;;;
+PT02;Country Template PT (SNC);Portugal;PT;EUR;P;SNC;K4;;0001;;;;;;;PT02;0001;;;;
+HU01;Country Template HU;Hungary;HU;HUF;H;CAHU;K4;;;;;;;HU12345678;;HU01;0001;K0;;;X
+QA01;Country Template QA;Doha;QA;QAR;E;INT;K4;;;;;;;;;QA01;;;;;
+RECO;Sondereigentum (WEG);Walldorf;DE;EUR;D;INT;K4;;0001;;;;0001;;;RECO;0001;A0;;;
+KZ01;Country Template KZ;Astana;KZ;KZT;R;CAKZ;K4;;0001;;;;;;;KZ01;0001;A0;;;
+MCA2;MCA Bank Backpack (doc.);Walldorf;DE;USD;D;BKMG;K4;MCA;;;;;;;;MCA;0001;A0;;;
+MCA3;MCA Bank 4-pack (bal.);Walldorf;DE;CHF;D;BKMG;K4;MCA;;;;;;;;MCA;0001;A0;;;
+MCA4;MCA Bank 4-pack (doc.);Walldorf;DE;CHF;D;BKMG;K4;MCA;;;;;;;;MCA;0001;A0;;;
+RS01;Country template RS;Serbia;RS;RSD;d;CARS;K4;;;;;;RS01;;;RS01;RS01;;;;X
+MX03;Country Template MX;Mexico;MX;MXN;S;;K4;;;;;;;;;;;;;;
+PL01;Country Template PL;Poland;PL;PLN;L;CAPL;K4;;;;;;;PL1234567890;;PL01;0001;XA;;;
+SLE0;Musterbank;Frankfurt;DE;EUR;;BKMG;K4;SLE0;;;;;;;;MCA;0001;;;;
+TH01;Country Template TH;Bangkok;TH;THB;2;INT;K4;;;;;;;TH3101247572;X;0001;0001;OX;;;X
+REOB;Referenz Objektmandate;Walldorf;DE;EUR;D;INT;K4;;0001;;;;0001;;;REOB;0001;A0;;;
+RERF;WEG Referenzbuchungskreis;Walldorf;DE;EUR;D;WEG;K4;;0001;;;;0001;;;RERF;0001;A0;;;
+RU01;Country Template RU;Russia;RU;RUB;R;CARU;K4;;;;;;;;;RU01;0001;JA;;;
+VE01;Country Template VE;Venezuela;VE;VEB;S;INT;K4;;;;;;;;X;0001;0001;A0;;;
+US01;Country Template US;U.S.A.;US;USD;E;CANA;K4;;;;;;;;;US01;0001;;;;X
+ZA01;Country Template ZA;South Africa;ZA;ZAR;E;INT;K4;;0001;;0001;;;;;0001;0001;A0;;;
+GABC;GOLDEN ABC, INCORPORATED;Mandaue City;PH;PHP;E;GABC;K4;;GABC;;;0000000661;;;X;GABC;GABC;ON;;X;X

@@ -1,0 +1,25 @@
+Ignore Table List
+
+12. CSR_LOG
+32. STPO
+
+
+55000113 order
+
+
+iw31
+oion
+
+
+rp04
+rp03
+
+
+<xs:element name="Authentication">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="Identity" type="xs:string"/>
+                    <xs:element name="SharedSecret" type="xs:string"/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
